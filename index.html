@@ -22,6 +22,32 @@
     --body:"Source Serif 4", Georgia, serif;
   }
   html{background:var(--cream)}
+  @media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+  section{scroll-margin-top:24px}
+  .to-top{position:fixed;right:calc(20px + env(safe-area-inset-right,0px));bottom:calc(20px + env(safe-area-inset-bottom,0px));z-index:10;
+    width:46px;height:46px;border-radius:50%;border:1px solid var(--rule-strong);background:var(--cream);color:var(--brown);
+    display:grid;place-items:center;cursor:pointer;box-shadow:0 4px 14px rgba(61,43,31,.12);
+    opacity:0;transform:translateY(10px);pointer-events:none;transition:opacity .3s ease,transform .3s ease,background .2s}
+  .to-top.show{opacity:1;transform:none;pointer-events:auto}
+  .to-top:hover{background:var(--brown);color:var(--cream)}
+  .to-top svg{width:18px;height:18px}
+  @media (prefers-reduced-motion:reduce){.to-top{transition:none}}
+  /* Mở trang có nhịp (chạy một lần) */
+  @keyframes enter{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion:no-preference){
+    .enter{animation:enter .9s cubic-bezier(.2,.7,.2,1) both;animation-delay:var(--d,0s)}
+    .num.tick{animation:tick .45s ease-out}
+  }
+  /* Chữ số đổi mềm */
+  @keyframes tick{from{opacity:.2;transform:translateY(-6px)}to{opacity:1;transform:none}}
+  /* Chân ô chi tiết: gợi ý cuộn + chuyển mốc */
+  .i-foot{display:none;align-items:center;justify-content:space-between;gap:12px;padding:6px 32px 12px 0;flex-wrap:wrap}
+  .gallery.focus .item.active .i-foot{display:flex}
+  .i-foot .scroll-hint{margin:0}
+  .i-nav{display:flex;gap:8px;margin-left:auto}
+  .i-nav button{font:13px var(--body);color:var(--brown);background:var(--cream);border:1px solid var(--rule-strong);border-radius:6px;padding:5px 12px;cursor:pointer;font-variant-numeric:lining-nums}
+  .i-nav button:hover{background:var(--brown);color:var(--cream);border-color:var(--brown)}
+  .i-nav button:disabled{opacity:.35;cursor:default;background:var(--cream);color:var(--brown);border-color:var(--rule-strong)}
   body{background:var(--cream);min-height:100vh;margin:0;color:var(--brown);font:17px/1.7 var(--body);padding-inline:16px}
   body::before{content:"";position:fixed;left:0;right:0;bottom:0;height:38vh;z-index:0;pointer-events:none;
     background:linear-gradient(to bottom,transparent,var(--fuchsia-tint))}
@@ -118,6 +144,7 @@
     .gallery.focus .item.active > .year,.gallery.focus .item.active > .t,.gallery.focus .item.active > .short{padding-right:0}
     .gallery.focus .item.active .detail{overflow:visible;padding-right:0;padding-bottom:4px;-webkit-mask-image:none;mask-image:none}
     .gallery.focus .item.active .scroll-hint{display:none}
+    .i-foot{padding:10px 0 0}
   }
   @media (prefers-reduced-motion:reduce){.gallery.focus .item,.item .year{transition:none}}
 
@@ -153,16 +180,16 @@
 <body>
 <div class="wrap" id="app">
   <header class="hero">
-    <figure class="portrait" style="margin-inline:auto">
+    <figure class="portrait enter" style="margin-inline:auto;--d:0s">
       <img id="portrait" alt="">
     </figure>
-    <p class="caption" id="caption"></p>
+    <p class="caption enter" id="caption" style="--d:.15s"></p>
 
     <div id="hero-before">
-      <div class="small" id="b-label"></div>
-      <h1 id="b-title"></h1>
-      <p class="sub" id="b-sub"></p>
-      <div class="clock">
+      <div class="small enter" id="b-label" style="--d:.3s"></div>
+      <h1 class="enter" id="b-title" style="--d:.38s"></h1>
+      <p class="sub enter" id="b-sub" style="--d:.46s"></p>
+      <div class="clock enter" style="--d:.65s">
         <div class="unit"><div class="num" id="d">–</div><div class="lbl">ngày</div></div>
         <div class="unit"><div class="num" id="h">–</div><div class="lbl">giờ</div></div>
         <div class="unit"><div class="num" id="m">–</div><div class="lbl">phút</div></div>
@@ -171,16 +198,16 @@
     </div>
 
     <div id="hero-after" hidden>
-      <div class="small" id="a-label"></div>
-      <h1 id="a-title"></h1>
-      <p class="sub" id="a-sub"></p>
-      <div class="since"><div class="num" id="since">0</div><div class="lbl" id="a-count"></div></div>
+      <div class="small enter" id="a-label" style="--d:.3s"></div>
+      <h1 class="enter" id="a-title" style="--d:.38s"></h1>
+      <p class="sub enter" id="a-sub" style="--d:.46s"></p>
+      <div class="since enter" style="--d:.65s"><div class="num" id="since">0</div><div class="lbl" id="a-count"></div></div>
     </div>
 
-    <p class="date-note" id="date-note"></p>
-    <p class="date-note" id="live-note" style="margin-top:4px"></p>
+    <p class="date-note enter" id="date-note" style="--d:.8s"></p>
+    <p class="date-note enter" id="live-note" style="margin-top:4px;--d:.85s"></p>
 
-    <nav class="ctas" aria-label="Hành động chính">
+    <nav class="ctas enter" aria-label="Hành động chính" style="--d:.9s">
       <a class="cta primary" href="#hoc" id="cta-learn"></a>
       <a class="cta" href="#cau-nguyen" id="cta-pray"></a>
     </nav>
@@ -231,6 +258,10 @@
   <footer id="footer"></footer>
 </div>
 
+<button class="to-top" id="to-top" type="button" aria-label="Lên đầu trang">
+  <svg viewBox="0 0 18 18" aria-hidden="true"><path d="M9 15V3M4 8l5-5 5 5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</button>
+
 <script src="noi-dung.js"></script>
 <script>
 (function(){
@@ -280,6 +311,13 @@
   const fmtTime = new Intl.DateTimeFormat("vi-VN", {hour:"2-digit", minute:"2-digit", timeZoneName:"short"});
   $("date-note").textContent = (C.suKien.daXacNhan ? "" : "Ngày dự kiến · ") + fmtDate.format(event) + ", " + fmtTime.format(event) + " (giờ của bạn) · " + C.suKien.diaDiem;
 
+  let firstTick = true;
+  function setNum(id, v){
+    const el = $(id); if (el.textContent === v) return;
+    el.textContent = v;
+    if (firstTick) return;
+    el.classList.remove("tick"); void el.offsetWidth; el.classList.add("tick");
+  }
   function render(){
     const now = new Date(), m = override || (now < event ? "before" : "after");
     $("hero-before").hidden = m !== "before";
@@ -287,10 +325,10 @@
     $("live-note").hidden = m !== "before" || !C.suKien.linkTrucTiep;
     if (m === "before"){
       const diff = Math.max(0, event - now) / 1000;
-      $("d").textContent = Math.floor(diff / 86400);
-      $("h").textContent = pad(Math.floor(diff % 86400 / 3600));
-      $("m").textContent = pad(Math.floor(diff % 3600 / 60));
-      $("s").textContent = pad(Math.floor(diff % 60));
+      setNum("d", String(Math.floor(diff / 86400)));
+      setNum("h", pad(Math.floor(diff % 86400 / 3600)));
+      setNum("m", pad(Math.floor(diff % 3600 / 60)));
+      setNum("s", pad(Math.floor(diff % 60)));
     } else {
       $("since").textContent = Math.max(0, Math.floor((now - event) / 86400000));
     }
@@ -298,6 +336,7 @@
     if ($("pray-lead").innerHTML !== lead) $("pray-lead").innerHTML = lead;
   }
 
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   // ---- Gallery ----
   const gal = $("gallery"), back = $("g-back");
   const items = [...gal.querySelectorAll(".item")];
@@ -309,7 +348,20 @@
     h.innerHTML = "<span>Cuộn để đọc tiếp</span>" + ARROW;
     h.addEventListener("click", e => { e.stopPropagation(); d.scrollBy({top: d.clientHeight * 0.7, behavior: "smooth"}); });
     d.addEventListener("scroll", () => h.classList.toggle("done", d.scrollTop + d.clientHeight >= d.scrollHeight - 6));
-    i.appendChild(h);
+    const idx = items.indexOf(i);
+    const prev = items[idx - 1], next = items[idx + 1];
+    const yr = el => el ? el.querySelector(".year").textContent : "";
+    const nav = document.createElement("div"); nav.className = "i-nav";
+    const bp = document.createElement("button"); bp.type = "button"; bp.textContent = "← " + (prev ? yr(prev) : ""); bp.setAttribute("aria-label", "Mốc trước");
+    const bn = document.createElement("button"); bn.type = "button"; bn.textContent = (next ? yr(next) : "") + " →"; bn.setAttribute("aria-label", "Mốc sau");
+    if (!prev){ bp.disabled = true; bp.textContent = "←"; }
+    if (!next){ bn.disabled = true; bn.textContent = "→"; }
+    bp.addEventListener("click", e => { e.stopPropagation(); step(-1); });
+    bn.addEventListener("click", e => { e.stopPropagation(); step(1); });
+    nav.append(bp, bn);
+    const foot = document.createElement("div"); foot.className = "i-foot";
+    foot.append(h, nav);
+    i.appendChild(foot);
   });
   function openItem(el){
     gal.classList.add("focus");
@@ -329,9 +381,43 @@
     i.addEventListener("keydown", e => { if ((e.key === "Enter" || e.key === " ") && !i.classList.contains("active")){ e.preventDefault(); openItem(i); } });
   });
   back.onclick = closeAll;
+  const isMobile = () => window.matchMedia("(max-width:760px)").matches;
+  function step(dir){
+    const cur = items.findIndex(i => i.classList.contains("active"));
+    const n = items[cur + dir]; if (!n) return;
+    openItem(n);
+    if (isMobile()) n.scrollIntoView({behavior: reduce ? "auto" : "smooth", block:"start"});
+    else n.focus({preventScroll:true});
+  }
+  document.addEventListener("keydown", e => {
+    if (!gal.classList.contains("focus")) return;
+    if (e.key === "ArrowRight"){ e.preventDefault(); step(1); }
+    if (e.key === "ArrowLeft"){ e.preventDefault(); step(-1); }
+  });
+  let tx = 0, ty = 0;
+  gal.addEventListener("touchstart", e => { tx = e.touches[0].clientX; ty = e.touches[0].clientY; }, {passive:true});
+  gal.addEventListener("touchend", e => {
+    if (!gal.classList.contains("focus")) return;
+    const dx = e.changedTouches[0].clientX - tx, dy = e.changedTouches[0].clientY - ty;
+    if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) step(dx < 0 ? 1 : -1);
+  }, {passive:true});
   document.addEventListener("keydown", e => { if (e.key === "Escape" && gal.classList.contains("focus")) closeAll(); });
 
-  render();
+  // ---- Nút lên đầu trang ----
+  const top = $("to-top");
+  const onScroll = () => top.classList.toggle("show", window.scrollY > 600);
+  window.addEventListener("scroll", onScroll, {passive:true}); onScroll();
+  top.onclick = () => window.scrollTo({top:0, behavior: reduce ? "auto" : "smooth"});
+
+  // Cuộn mượt cho các nút chuyển đến mục (dự phòng cho trình duyệt cũ)
+  document.querySelectorAll('a[href^="#"]').forEach(a => a.addEventListener("click", e => {
+    const t = document.getElementById(a.getAttribute("href").slice(1));
+    if (!t) return;
+    e.preventDefault();
+    t.scrollIntoView({behavior: reduce ? "auto" : "smooth", block:"start"});
+  }));
+
+  render(); firstTick = false;
   setInterval(render, 1000);
 })();
 </script>
